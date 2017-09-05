@@ -88,4 +88,20 @@ describe('GET /object/:key', () => {
     expect(response.status).toBe(404);
     expect(JSON.parse(response.text)).toEqual({ error: 'Bad request with incorrect query value.' });
   });
+  it('should return not found when query timestamp is zero', async() => {
+    const response = await request(index).get('/object/key?timestamp=0');
+    expect(response.status).toBe(404);
+    expect(JSON.parse(response.text)).toEqual({ error: 'key not found!' });
+  });
+  it('should return not found when query timestamp is minus', async() => {
+    const response = await request(index).get('/object/key?timestamp=-1');
+    expect(response.status).toBe(404);
+    expect(JSON.parse(response.text)).toEqual({ error: 'key not found!' });
+  });
+  it('should return not found when query timestamp is very large', async() => {
+    const largeNumber = Number.MAX_VALUE * 10;
+    const response = await request(index).get(`/object/key?timestamp=${largeNumber}`);
+    expect(response.status).toBe(200);
+    expect(response.body.value).toBe('value3');
+  });
 });
