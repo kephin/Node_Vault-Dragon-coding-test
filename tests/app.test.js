@@ -56,4 +56,14 @@ describe('GET /object/:key', () => {
     expect(response.status).toBe(200);
     expect(response.body.value).toBe('value3');
   });
+  it('should return the value at certain timestamp query', async() => {
+    const response = await request(start).get(`/object/key?timestamp=${secondStore.timeStamp}`);
+    expect(response.status).toBe(200);
+    expect(response.body.value).toBe('value2');
+  });
+  it('should return the value within the timestamp query', async() => {
+    const response = await request(start).get(`/object/key?timestamp=${thirdStore.timeStamp - 1}`);
+    expect(response.status).toBe(200);
+    expect(response.body.value).toBe('value2');
+  });
 });
