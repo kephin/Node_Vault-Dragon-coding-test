@@ -73,4 +73,19 @@ describe('GET /object/:key', () => {
     expect(response.status).toBe(200);
     expect(response.body.value).toBe('value2');
   });
+  it('should return error when multiple queries', async() => {
+    const response = await request(index).get('/object/key?timestamp=100&hello=world');
+    expect(response.status).toBe(404);
+    expect(JSON.parse(response.text)).toEqual({ error: 'Bad request with too much queries.' });
+  });
+  it('should return error when invalid query key', async() => {
+    const response = await request(index).get('/object/key?timestamps=10000');
+    expect(response.status).toBe(404);
+    expect(JSON.parse(response.text)).toEqual({ error: 'Bad request with incorrect query name.' });
+  });
+  it('should return error when invalid query value', async() => {
+    const response = await request(index).get('/object/key?timestamp=10000s');
+    expect(response.status).toBe(404);
+    expect(JSON.parse(response.text)).toEqual({ error: 'Bad request with incorrect query value.' });
+  });
 });
