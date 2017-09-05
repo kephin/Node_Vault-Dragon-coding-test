@@ -6,9 +6,9 @@ require('dotenv').config({ path: 'variable.env' });
 
 // connect to MongoDB
 if (process.env.NODE_ENV === 'test') {
-  mongoose.connect(process.env.DATABASE_TEST);
+  mongoose.connect(process.env.MONGODB_TEST_URI);
 } else {
-  mongoose.connect(process.env.DATABASE);
+  mongoose.connect(process.env.MONGODB_URI);
 }
 mongoose.Promise = global.Promise;
 mongoose.connection.on('error', err => console.error(err.message));
