@@ -40,3 +40,20 @@ describe('POST /object', () => {
     expect(response.body.timeStamp).toBe(stores[0].timeStamp);
   });
 });
+
+describe('GET /object/:key', () => {
+  let firstStore;
+  let secondStore;
+  let thirdStore;
+  before('create 3 stores at the beginning', async() => {
+    await Store.remove();
+    firstStore = await Store.create({ key: 'key', value: 'value1' });
+    secondStore = await Store.create({ key: 'key', value: 'value2' });
+    thirdStore = await Store.create({ key: 'key', value: 'value3' });
+  });
+  it('should accept a key and return the latest value', async() => {
+    const response = await request(start).get('/object/key');
+    expect(response.status).toBe(200);
+    expect(response.body.value).toBe('value3');
+  });
+});
