@@ -1,7 +1,7 @@
 const expect = require('expect');
 const request = require('supertest');
 
-const start = require('../start');
+const index = require('../index');
 const Store = require('../models/Store');
 
 before('keep the DB clean before test', async() => {
@@ -12,7 +12,7 @@ describe('POST /object', () => {
   it('should accept a key/value JOSN data and store', async() => {
     const dataObject = { key: 'value' };
     // assert return object
-    const response = await request(start)
+    const response = await request(index)
       .post('/object')
       .send(dataObject);
     expect(response.status).toBe(200);
@@ -27,7 +27,7 @@ describe('POST /object', () => {
   it('should update value if existing key is sent', async() => {
     const newDataObject = { key: 'newValue' };
     // assert return object
-    const response = await request(start)
+    const response = await request(index)
       .post('/object')
       .send(newDataObject);
     expect(response.status).toBe(200);
@@ -52,17 +52,17 @@ describe('GET /object/:key', () => {
     thirdStore = await Store.create({ key: 'key', value: 'value3' });
   });
   it('should accept a key and return the latest value', async() => {
-    const response = await request(start).get('/object/key');
+    const response = await request(index).get('/object/key');
     expect(response.status).toBe(200);
     expect(response.body.value).toBe('value3');
   });
   it('should return the value at certain timestamp query', async() => {
-    const response = await request(start).get(`/object/key?timestamp=${secondStore.timeStamp}`);
+    const response = await request(index).get(`/object/key?timestamp=${secondStore.timeStamp}`);
     expect(response.status).toBe(200);
     expect(response.body.value).toBe('value2');
   });
   it('should return the value within the timestamp query', async() => {
-    const response = await request(start).get(`/object/key?timestamp=${thirdStore.timeStamp - 1}`);
+    const response = await request(index).get(`/object/key?timestamp=${thirdStore.timeStamp - 1}`);
     expect(response.status).toBe(200);
     expect(response.body.value).toBe('value2');
   });
