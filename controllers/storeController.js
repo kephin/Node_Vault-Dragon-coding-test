@@ -21,7 +21,11 @@ exports.getStore = async(req, res, next) => {
 };
 
 exports.addStore = async(req, res, next) => {
-  const [key, value] = Object.entries(req.body)[0];
+  // avoid empty JSON data
+  const keyValueArray = Object.entries(req.body);
+  if (keyValueArray.length === 0) return next(new Error('Empty input.'));
+
+  const [key, value] = keyValueArray[0];
   try {
     const newStore = await Store.create({ key, value });
     const timeStamp = newStore.timeStamp;

@@ -39,6 +39,13 @@ describe('POST /object', () => {
     expect(stores.length).toBe(1);
     expect(response.body.timeStamp).toBe(stores[0].timeStamp);
   });
+  it('should throw error if empty JSON data', async() => {
+    const response = await request(index)
+      .post('/object')
+      .send({});
+    expect(response.status).toBe(404);
+    expect(JSON.parse(response.text)).toEqual({ error: 'Empty input.' });
+  });
 });
 
 describe('GET /object/:key', () => {
