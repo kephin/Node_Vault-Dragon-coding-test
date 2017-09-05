@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
 const Store = require('../models/Store');
 
-exports.getStore = async(req, res) => {
+exports.getStore = async(req, res, next) => {
   const queryTimeStamp = parseInt(req.query.timestamp, 10);
   try {
     const store = queryTimeStamp ?
@@ -17,17 +16,17 @@ exports.getStore = async(req, res) => {
     const { value } = store[0];
     res.json({ value });
   } catch (err) {
-    res.status(404).json(err);
+    next(err);
   }
 };
 
-exports.addStore = async(req, res) => {
+exports.addStore = async(req, res, next) => {
   const [key, value] = Object.entries(req.body)[0];
   try {
     const newStore = await Store.create({ key, value });
     const timeStamp = newStore.timeStamp;
     res.status(200).json({ key, value, timeStamp });
   } catch (err) {
-    res.status(404).json(err);
+    next(err);
   }
 };
