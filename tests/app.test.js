@@ -24,4 +24,19 @@ describe('POST /object', () => {
     expect(stores[0].value).toBe('value');
     expect(response.body.timeStamp).toBe(stores[0].timeStamp);
   });
+  it('should update value if existing key is sent', async() => {
+    const newDataObject = { key: 'newValue' };
+    // assert return object
+    const response = await request(start)
+      .post('/object')
+      .send(newDataObject);
+    expect(response.status).toBe(200);
+    expect(response.body.key).toBe('key');
+    expect(response.body.value).toBe('newValue');
+
+    // assert DB
+    const stores = await Store.find({ key: 'key', value: 'newValue' });
+    expect(stores.length).toBe(1);
+    expect(response.body.timeStamp).toBe(stores[0].timeStamp);
+  });
 });
